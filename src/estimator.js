@@ -31,26 +31,33 @@ const covid19ImpactEstimator = (data) => {
   const hospitalBedsByRequestedTimeForImpact = availableBedsAfter65PercentOccupied - severeCasesByRequestedTimeForImpactAt35Percent;
   const hospitalBedsByRequestedTimeForSevereImpact = availableBedsAfter65PercentOccupied - severeCasesByRequestedTimeForSevereImpactAt35Percent;
 
+ // challange III:
+ 
+
   return {
     impact: {
       currentlyInfected: currentlyInfectedForImpact,
-      infectionsByRequestedTime: infectionsByRequestedTimeForImpact
+      infectionsByRequestedTime: infectionsByRequestedTimeForImpact,
+      severeCasesByRequestedTime: severeCasesByRequestedTimeForImpact,
+      hospitalBedsByRequestedTime: hospitalBedsByRequestedTimeForImpact
     },
     severeImpact: {
       currentlyInfected: currentlyInfectedForsevereImpact,
-      infectionsByRequestedTime: infectionsByRequestedTimeForSevereImpact
+      infectionsByRequestedTime: infectionsByRequestedTimeForSevereImpact,
+      severeCasesByRequestedTime: severeCasesByRequestedTimeForSevereImpact,
+      hospitalBedsByRequestedTime: hospitalBedsByRequestedTimeForSevereImpact
 
     },
-    periodType: input.periodType,
-    timeToElapse: input.timeToElapse,
-    reportedCases: input.reportedCases,
-    population: input.population,
-    totalHospitalBeds: input.totalHospitalBeds,
+    periodType: data.periodType,
+    timeToElapse: data.timeToElapse,
+    reportedCases: data.reportedCases,
+    population: data.population,
+    totalHospitalBeds: data.totalHospitalBeds,
     region: {
-      name: input.region.name,
-      avgAge: input.region.avgAge,
-      avgDailyIncomeInUSD: input.region.avgDailyIncomeInUSD,
-      avgDailyIncomePopulation: input.region.avgDailyIncomePopulation
+      name: data.region.name,
+      avgAge: data.region.avgAge,
+      avgDailyIncomeInUSD: data.region.avgDailyIncomeInUSD,
+      avgDailyIncomePopulation: data.region.avgDailyIncomePopulation
     }
   };
 };
