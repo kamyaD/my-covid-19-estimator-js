@@ -40,6 +40,9 @@ const covid19ImpactEstimator = ({ data }) => {
   const dollarsInFlightforImpact = infectionsByRequestedTimeForImpact * data.region.avgDailyIncomeInUSD;
   const dollarsInFlightfForServereImpact = infectionsByRequestedTimeForSevereImpact * data.region.avgDailyIncomeInUSD;
 
+ // challange III:
+ 
+
   return {
     impact: {
       currentlyInfected: currentlyInfectedForImpact,
