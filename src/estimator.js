@@ -1,69 +1,58 @@
-const input = {
-  region: {
-    name: 'Africa',
-    avgAge: 19.7,
-    avgDailyIncomeInUSD: 5,
-    avgDailyIncomePopulation: 0.71
-  },
-  periodType: 'days',
-  timeToElapse: 58,
-  reportedCases: 674,
-  population: 66622705,
-  totalHospitalBeds: 1380614
+
+const durationNormalizer = (periodType, timeToElapse) => {
+  if (periodType === 'days') {
+    return timeToElapse;
+  } if (periodType === 'weeks') {
+    return timeToElapse * 7;
+  }
+  return timeToElapse * 30;
 };
-  
+
 const covid19ImpactEstimator = ({ data }) => {
   // Challange 1:
   const currentlyInfectedForImpact = data.reportedCases * 10;
   const currentlyInfectedForsevereImpact = data.reportedCases * 50;
-  const infectionsByRequestedTimeForImpact = currentlyInfectedForImpact * 512;
-  const infectionsByRequestedTimeForSevereImpact = currentlyInfectedForsevereImpact * 512;
-  
+  const infectionsByRequestedTimeFI = currentlyInfectedForImpact * 512;
+  const infectionsByRequestedTimeFSI = currentlyInfectedForsevereImpact * 512;
   // Challange II:
-  const severeCasesByRequestedTimeForImpact = infectionsByRequestedTimeForImpact * 0.15;
-  const severeCasesByRequestedTimeForSevereImpact = infectionsByRequestedTimeForSevereImpact * 0.15;
+  const severeCasesByRequestedTimeForImpact = infectionsByRequestedTimeFI * 0.15;
+  const severeCasesByRequestedTimeForSevereImpact = infectionsByRequestedTimeFSI * 0.15;
   const totalHospitalBedsAt95Percent = data.totalHospitalBeds * 0.95;
   const bedsAlreadyOccupied = totalHospitalBedsAt95Percent * 0.65;
-  
-  const availableBedsAfter65PercentOccupied = totalHospitalBedsAt95Percent - bedsAlreadyOccupied;
-  const severeCasesByRequestedTimeForImpactAt35Percent = severeCasesByRequestedTimeForImpact * 0.35;
-  const severeCasesByRequestedTimeForSevereImpactAt35Percent = severeCasesByRequestedTimeForSevereImpact * 0.35;
-  const hospitalBedsByRequestedTimeForImpact = availableBedsAfter65PercentOccupied - severeCasesByRequestedTimeForImpactAt35Percent;
-  const hospitalBedsByRequestedTimeForSevereImpact = availableBedsAfter65PercentOccupied - severeCasesByRequestedTimeForSevereImpactAt35Percent;
-  
+  const availableBedsAfter65P = totalHospitalBedsAt95Percent - bedsAlreadyOccupied;
+  const severeCasesByRequestedTimeFI35P = severeCasesByRequestedTimeForImpact * 0.35;
+  const severeCasesByRequestedTimeFSI35 = severeCasesByRequestedTimeForSevereImpact * 0.35;
+  const hospitalBedsByRequestedTimeFI = availableBedsAfter65P - severeCasesByRequestedTimeFI35P;
+  const hospitalBedsByRequestedTimeFSI = availableBedsAfter65P - severeCasesByRequestedTimeFSI35;
   // challange III:
-  const casesForICUByRequestedTimeForImpact = infectionsByRequestedTimeForImpact * 0.05;
-  const casesForICUByRequestedTimeForServereImpact = infectionsByRequestedTimeForSevereImpact * 0.05;
-  
-  const casesForVentilatorsByRequestedTimeForImpact = infectionsByRequestedTimeForImpact * 0.02;
-  const casesForVentilatorsByRequestedTimeForServereImpact = infectionsByRequestedTimeForSevereImpact;
-  const dollarsInFlightforImpact = infectionsByRequestedTimeForImpact * data.region.avgDailyIncomeInUSD;
-  const dollarsInFlightfForServereImpact = infectionsByRequestedTimeForSevereImpact * data.region.avgDailyIncomeInUSD;
-
- // challange III:
- 
+  const casesForICUByRequestedTimeForImpact = infectionsByRequestedTimeFI * 0.05;
+  const casesForICUByRequestedTimeForServereImpact = infectionsByRequestedTimeFSI * 0.05;
+  const casesForVentilatorsByRequestedTimeForImpact = infectionsByRequestedTimeFI * 0.02;
+  const casesForVentilatorsByRequestedTimeForServereImpact = infectionsByRequestedTimeFSI;
+  const dollarsInFlightforImpact = infectionsByRequestedTimeFI * data.region.avgDailyIncomeInUSD;
+  const dollarsInFlightfFSI = infectionsByRequestedTimeFSI * data.region.avgDailyIncomeInUSD;
 
   return {
     impact: {
       currentlyInfected: currentlyInfectedForImpact,
-      infectionsByRequestedTime: infectionsByRequestedTimeForImpact,
+      infectionsByRequestedTime: infectionsByRequestedTimeFI,
       severeCasesByRequestedTime: severeCasesByRequestedTimeForImpact,
-      hospitalBedsByRequestedTime: hospitalBedsByRequestedTimeForImpact,
+      hospitalBedsByRequestedTime: hospitalBedsByRequestedTimeFI,
       casesForICUByRequestedTime: casesForICUByRequestedTimeForImpact,
       casesForVentilatorsByRequestedTime: casesForVentilatorsByRequestedTimeForImpact,
       dollarsInFlight: dollarsInFlightforImpact
     },
     severeImpact: {
       currentlyInfected: currentlyInfectedForsevereImpact,
-      infectionsByRequestedTime: infectionsByRequestedTimeForSevereImpact,
+      infectionsByRequestedTime: infectionsByRequestedTimeFSI,
       severeCasesByRequestedTime: severeCasesByRequestedTimeForSevereImpact,
-      hospitalBedsByRequestedTime: hospitalBedsByRequestedTimeForSevereImpact,
+      hospitalBedsByRequestedTime: hospitalBedsByRequestedTimeFSI,
       casesForICUByRequestedTime: casesForICUByRequestedTimeForServereImpact,
       casesForVentilatorsByRequestedTime: casesForVentilatorsByRequestedTimeForServereImpact,
-      dollarsInFlight: dollarsInFlightfForServereImpact
+      dollarsInFlight: dollarsInFlightfFSI
     },
     periodType: data.periodType,
-    timeToElapse: data.timeToElapse,
+    timeToElapse: durationNormalizer(data.periodType, data.timeToElapse),
     reportedCases: data.reportedCases,
     population: data.population,
     totalHospitalBeds: data.totalHospitalBeds,
