@@ -12,7 +12,7 @@ const input = {
   totalHospitalBeds: 1380614
 };
   
-const covid19ImpactEstimator = (data) => {
+const covid19ImpactEstimator = ({ data }) => {
   // Challange 1:
   const currentlyInfectedForImpact = data.reportedCases * 10;
   const currentlyInfectedForsevereImpact = data.reportedCases * 50;
@@ -73,5 +73,4 @@ const covid19ImpactEstimator = (data) => {
   };
 };
 
-export default covid19ImpactEstimator;
-  
+exports.covid19ImpactEstimator = covid19ImpactEstimator;
